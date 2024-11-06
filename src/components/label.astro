@@ -1,0 +1,8 @@
+---
+const { color, slug } = Astro.props;
+console.log(Astro.props)
+---
+
+<a href={slug} class={ `inline-block text-xs font-medium tracking-wider uppercase ${color} `}>
+  <slot />
+  </a>

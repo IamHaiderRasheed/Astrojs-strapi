@@ -1,0 +1,137 @@
+---
+import Layout from "../../src/layouts/layout.astro";
+import Container from "../../src/components/container.astro";
+import Label from "../../src/components/label.astro";
+
+export async function getStaticPaths() {
+  let posts = [];
+  try {
+    const response = await fetch(
+      "http://localhost:1337/api/posts?populate[image]=true&populate[categories]=true"
+    );
+    const result = await response.json();
+    posts = result.data; 
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+  }
+
+  return posts.map((post) => ({
+    params: { blogPost: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { title, description, categories, tags, image } = post;
+
+---
+
+<Layout>
+  <Container>
+    <div class="max-w-screen-md mx-auto">
+      <div class="text-center flex justify-center gap-2">
+        {
+          categories.map((category) => (
+            <Label color={category.categoryColor} slug={category.catSlug}>
+              {category.name}
+            </Label>
+          ))
+        }
+      </div>
+
+      <h1
+        class="mt-2 text-3xl font-semibold tracking-tight text-center lg:leading-snug text-brand-primary lg:text-4xl dark:text-white"
+      >
+        {title}
+      </h1>
+    </div>
+  </Container>
+
+
+  <div
+  class="relative z-0 max-w-screen-lg mx-auto overflow-hidden lg:rounded-lg aspect-video">
+  {
+    image && (
+      <img
+        src={`http://localhost:1337${image.url}`} 
+        alt={image.alternativeText || "Post Thumbnail"}
+        width="1024"
+        height="576"
+        class="w-full object-cover"
+        loading="lazy"
+      />
+    )
+  }
+</div>
+
+
+
+  <Container>
+    <article class="max-w-screen-md mx-auto">
+      <div class="mx-auto my-3 prose prose-base dark:prose-invert prose-a:text-blue-600" >
+        {
+          post.description.map((block, index) => {
+            switch (block.type) {
+              case "heading":
+                // Render headings with dynamic levels (e.g., H3, H4)
+                const HeadingTag = `h${block.level}`;
+                return (
+                  <HeadingTag key={index}>
+                    {block.children.map((child, childIndex) => child.text)}
+                  </HeadingTag>
+                );
+
+              case "paragraph":
+                return (
+                  <p key={index}>
+                    {block.children.map((child, childIndex) => {
+                      if (child.bold)
+                        return <strong key={childIndex}>{child.text}</strong>;
+                      if (child.italic)
+                        return <em key={childIndex}>{child.text}</em>;
+                      return <span key={childIndex}>{child.text}</span>;
+                    })}
+                  </p>
+                );
+
+              case "list":
+                return (
+                  <ul key={index}>
+                    {block.children.map((item, itemIndex) => (
+                      <li key={itemIndex}>
+                        {item.children.map((child, childIndex) => child.text)}
+                      </li>
+                    ))}
+                  </ul>
+                );
+
+              default:
+                return null;
+            }
+          })
+        }
+
+        <div class="flex flex-wrap items-center w-full gap-3 mt-3 md:w-auto">
+          {
+            tags &&
+              tags.map((tag) => (
+                <span class="text-sm text-gray-500">#{tag}</span>
+              ))
+          }
+        </div>
+      </div>
+
+      <div class="flex justify-center mt-7 mb-7">
+        <a
+          href="/archive"
+          class="px-5 py-3 text-sm text-white transition rounded-md dark:bg-gray-700 dark:text-white bg-gray-800 hover:bg-gray-900"
+        >
+          ← View all posts
+        </a>
+      </div>
+      <!-- {author && <Authorcard author={author} />} -->
+    </article>
+  </Container>
+</Layout>
+
+

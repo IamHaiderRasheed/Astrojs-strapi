@@ -1,0 +1,42 @@
+---
+
+import Layout from "../../src/layouts/layout.astro";
+import Container from "../../src/components/container.astro";
+import Postcard from "../../src/components/postcard.astro";
+
+export async function getStaticPaths() {
+  let categories = [];
+try {
+  const response = await fetch("http://localhost:1337/api/categories?populate[posts][populate]=image");
+  const result = await response.json();
+  categories = result.data; // assuming `result.data` contains an array of posts
+} catch (error) {
+  console.error("Error fetching posts:", error);
+}
+
+  // Generate paths based on the categories names
+  return categories.map(cat => ({
+    params: { categoryPage: cat.catSlug }, // 'categoryPage' matches the file name [categoryPage].astro
+    props: { cat },
+  }));
+}
+let {cat}=Astro.props
+const { name, categoryColor, posts } = cat;
+---
+
+<Layout title="Archive">
+  <Container>
+    <section class= text-center > 
+  <h1 class="text-3xl font-semibold tracking-tight text-center lg:leading-snug text-brand-primary lg:text-4xl dark:text-white"> 
+    {name}
+  </h1>
+    <p class="text-lg mt-3 text-gray-600 dark:text-gray-400"> All posts belongs to {name}</p>
+
+  </section>
+    <main>
+      <div class="grid gap-10 mt-10 lg:gap-10 md:grid-cols-2 xl:grid-cols-3">
+        { posts.map((post) => <Postcard post={post} aspect="square" />)}
+      </div>
+    </main>
+  </Container>
+</Layout>
