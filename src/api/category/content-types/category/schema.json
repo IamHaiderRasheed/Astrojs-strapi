@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": {
+    "singularName": "category",
+    "pluralName": "categories",
+    "displayName": "Category",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "posts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::post.post",
+      "inversedBy": "categories"
+    },
+    "catSlug": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "categoryColor": {
+      "type": "enumeration",
+      "enum": [
+        "text-purple-600",
+        "text-emerald-700",
+        "text-pink-600",
+        "text-orange-700"
+      ]
+    }
+  }
+}
