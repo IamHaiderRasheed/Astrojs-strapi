@@ -6,7 +6,6 @@ dist/
 build/
 
 # Temporary files and folders
-.tmp/
 .cache/
 .strapi-updater/
 
