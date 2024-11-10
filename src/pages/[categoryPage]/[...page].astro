@@ -1,0 +1,68 @@
+---
+import Container from '../../components/container.astro';
+import Pagination from '../../components/pagination.astro';
+import Postcard from '../../components/postcard.astro';
+import Layout from '../../layouts/layout.astro';
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
+export async function getStaticPaths({paginate}) {
+  let categories = [];
+  const apiUrl = import.meta.env.VITE_API_URL;
+  try {
+    const response = await fetch(`${apiUrl}/api/categories?populate[posts][populate]=image`);
+    const result = await response.json();
+    categories = result.data; 
+    
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+  }
+
+// Generate paths based on the categories names
+return  categories.flatMap((category)=>{
+  let {name, catSlug, categoryColor, posts}=category
+   let singleCatPostsArr= posts 
+  
+return paginate(singleCatPostsArr, {
+      params: { categoryPage: catSlug },
+      pageSize: 3
+    });
+  });
+
+}
+const {categoryPage} =Astro.params
+const {page} = Astro.props
+const {data: posts, total, currentPage, lastPage, url} = page
+
+let author;
+try {
+    const response = await fetch(`${apiUrl}/api/users/1?populate[avatar]=true`);
+    const result = await response.json();
+   author= result
+  } catch (error) {
+    console.error("Error fetching user:", error);
+  }
+
+---
+
+<Layout title="Archive">
+  <Container>
+    <section class="text-center">
+      <h1
+        class="text-3xl font-semibold tracking-tight text-center lg:leading-snug text-brand-primary lg:text-4xl dark:text-white"
+      >
+     
+        {categoryPage.toUpperCase()}
+      </h1>
+      <p class="text-lg mt-3 text-gray-600 dark:text-gray-400">
+        Total posts {total}
+      </p>
+    </section>
+    <main>
+      <div class="grid gap-10 mt-10 lg:gap-10 md:grid-cols-2 xl:grid-cols-3">
+        {posts.map((post) => <Postcard post={post} author ={author} aspect="square" />)}
+      </div>
+    </main>
+    <Pagination url={url} currentPage={currentPage} lastPage={lastPage}/>
+  </Container>
+</Layout>

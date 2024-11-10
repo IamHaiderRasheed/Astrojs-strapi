@@ -1,13 +1,58 @@
 ---
 import Layout from "../../src/layouts/layout.astro";
-import Postcard from "../../src/components/postcard.astro";
 import Container from "../../src/components/container.astro";
+import { Image } from 'astro:assets';
+const apiUrl = import.meta.env.VITE_API_URL;
 
-let name = "Yakuza";
+let author;
+try {
+    const response = await fetch(`${apiUrl}/api/users/1?populate[avatar]=true`);
+    const result = await response.json();
+    author = result;
+} catch (error) {
+    console.error("Error fetching user:", error);
+}
 ---
-
 <Layout>
-  <Container>
+  <Container class="flex flex-col md:flex-row items-center md:items-start">
+    <!-- Author Image -->
+    <div class="about-image  md:w-40 md:h-40 overflow-hidden flex-shrink-0 mb-6 md:mb-0">
+      <Image
+        src={`${apiUrl}${author.avatar.formats.thumbnail.url}`} 
+        width={author.avatar.formats.thumbnail.width}
+        height={author.avatar.formats.thumbnail.height}
+        alt={author.name}
+        class="w-full h-full object-cover"
+      />
+    </div>
+    <!-- Author Content -->
+    <div class="about-section flex flex-col md:flex-row items-center md:items-start bg-gray-100 p-6 rounded-lg gap-8">
+      <div class="about-content text-center md:text-left">
+        <h2 class="text-2xl font-semibold">{author.name}</h2>
+        <h3 class="text-lg text-gray-500 mt-2">{author.designation}</h3>
+        <p class="text-gray-600 mt-4 leading-relaxed">
+          I am a passionate software engineer with extensive experience in modern web development technologies. I specialize in JavaScript and TypeScript, with a deep focus on building scalable, high-performance applications using frameworks like React, Node.js, Express, Next.js, and Astro.js.
+        </p>
+        <p class="text-gray-600 mt-4 leading-relaxed">
+          With a strong understanding of both front-end and back-end development, I excel at creating seamless and user-friendly applications. I leverage my solid problem-solving skills to identify and resolve complex technical challenges, ensuring robust and reliable solutions for my projects.
+        </p>
+        <p class="text-gray-600 mt-4 leading-relaxed">
+          My expertise also includes working with headless CMS platforms like Strapi and Sanity, where I build dynamic, content-driven websites and applications with decoupled architecture, allowing clients to manage content efficiently.
+        </p>
+        <p class="text-gray-600 mt-4 leading-relaxed">
+          In terms of web performance, I have hands-on experience implementing Static Site Generation (SSG) and Server-Side Rendering (SSR) using Next.js and Astro.js, enabling me to deliver fast, SEO-optimized websites.
+        </p>
+        <p class="text-gray-600 mt-4 leading-relaxed">
+          I take pride in writing clean, modular, and maintainable code, thanks to my strong foundation in object-oriented programming (OOP). I am committed to delivering high-quality solutions by focusing on reusable, scalable, and efficient code structure.
+        </p>
+        <p class="text-gray-600 mt-4 leading-relaxed">
+          On the front end, I am well-versed in Tailwind CSS, Material UI, Bulma, and Sass, which I use to craft responsive, visually appealing user interfaces. I strive to create designs that are not only functional but also enhance the overall user experience.
+        </p>
+        <p class="text-gray-600 mt-4 leading-relaxed">
+          Always eager to stay ahead of the curve, I continuously explore new technologies and development best practices, ensuring that my skills remain sharp in the ever-evolving tech landscape.
+        </p>
+      </div>
+    </div>
     
   </Container>
 </Layout>

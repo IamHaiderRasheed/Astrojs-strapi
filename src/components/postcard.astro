@@ -1,8 +1,10 @@
 ---
 import { Picture } from "astro:assets";
 import cx from "classnames";
-const {aspect, preloadImage }= Astro.props
-const {  title, slug, excerpt, categories, publishedAt, image } = Astro.props.post; // Destructure the props
+import { Image } from 'astro:assets'
+const apiUrl = import.meta.env.VITE_API_URL;
+const {aspect, preloadImage, author, post }= Astro.props
+const {  title, slug, excerpt, categories, publishedAt, image } = post; 
 
 // Format Date
 const date = new Date(publishedAt);
@@ -23,10 +25,11 @@ const formattedDate = date.toLocaleDateString("en-US", options);
   <a href={slug}>
     {
       image ? (
-        <img
-        src={`http://localhost:1337${image?.url}`} 
+        <Image
+        src={`${apiUrl}${image?.formats.small.url}`} 
           widths={[200, 400, 800]}
-          sizes="(max-width: 640px) 90vw, 480px"
+          width={image?.formats.small.width} 
+          height={image?.formats.small.height}
           alt="Thumbnail"
           loading={preloadImage ? "eager" : "lazy"}
           class="w-full h-full rounded-md"
@@ -53,7 +56,7 @@ const formattedDate = date.toLocaleDateString("en-US", options);
        categories && categories.map((category) => (
         <a
           href={category.catSlug}
-          class={`relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium hover:bg-gray-100 ${category.categoryColor}`}
+          class={`relative z-10 rounded-full bg-gray-200 px-3 py-1.5 font-medium hover:bg-gray-300 ${category.categoryColor}`}
           key={category.id}
         >
           {category.name}
@@ -73,19 +76,21 @@ const formattedDate = date.toLocaleDateString("en-US", options);
   </div>
 
   <div class="relative mt-8 flex items-center gap-x-4 px-4 pb-4">
-    <img
-      src=""
-      alt=""
+    <Image
+    src={`${apiUrl}${author.avatar.formats.thumbnail.url}`} 
+    width={author.avatar.formats.thumbnail.width}
+    height={author.avatar.formats.thumbnail.height}
+    alt={author.name}
       class="h-10 w-10 rounded-full bg-gray-50"
     />
     <div class="text-sm">
       <p class="font-semibold text-gray-900">
-        <a href="#">
+        <a href="/about">
           <span class="absolute inset-0"></span>
-          John Doe
+         {author.name}
         </a>
       </p>
-      <p class="text-gray-600">Co-Founder / CTO</p>
+      <p class="text-gray-600">{author.designation}</p>
     </div>
   </div>
 </article>

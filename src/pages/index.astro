@@ -1,18 +1,31 @@
 ---
-// src/pages/[slug].astro
-
 import Layout from "../../src/layouts/layout.astro";
 import Postcard from "../../src/components/postcard.astro";
 import Container from "../../src/components/container.astro";
+import Pagination from "../../src/components/pagination.astro";
+const apiUrl = import.meta.env.VITE_API_URL;
 
-// Fetch data from Strapi at build time
 let posts = [];
+
+// Fetch posts data
 try {
-  const response = await fetch("http://localhost:1337/api/posts?populate[image]=true&populate[categories]=true");
+  const response = await fetch(`${apiUrl}/api/posts?populate[image]=true&populate[categories]=true`);
   const result = await response.json();
-  posts = result.data; // assuming `result.data` contains an array of posts
+  posts = result.data;
 } catch (error) {
   console.error("Error fetching posts:", error);
+}
+
+posts.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+
+let author;
+try {
+    const response = await fetch(`${apiUrl}/api/users/1?populate[avatar]=true`);
+    const result = await response.json();
+    author = result;
+} catch (error) {
+    console.error("Error fetching user:", error);
 }
 ---
 
@@ -20,24 +33,19 @@ try {
   <Container>
     <main>
       <div class="grid gap-10 lg:gap-7 md:grid-cols-2">
-        <!-- Dynamically render Postcard components for each post -->
-        {
-          posts
-            .slice(0, 2)
-            .map((post) => (
-              <Postcard post={post} aspect="landscape" preloadImage={true} />
-            ))
-        }
+        <!-- Display first two paginated posts in landscape layout -->
+        {posts.slice(0, 2).map((post) => (
+          <Postcard post={post} author={author} aspect="landscape" preloadImage={true} />
+        ))}
       </div>
       <div class="grid gap-10 mt-10 lg:gap-10 md:grid-cols-2 xl:grid-cols-3">
-        {
-          posts
-            .slice(2)
-            .map((post) => <Postcard post={post} aspect="square" preloadImage={true} />)
-        }
+        <!-- Display remaining paginated posts in square layout -->
+        {posts.slice(2).map((post) => (
+          <Postcard post={post} author={author} aspect="square" preloadImage={true} />
+        ))}
       </div>
     </main>
+   
+    <!-- <Pagination  />  -->
   </Container>
 </Layout>
-
-

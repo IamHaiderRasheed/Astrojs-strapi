@@ -2,47 +2,42 @@
 import Layout from "../../src/layouts/layout.astro";
 import Container from "../../src/components/container.astro";
 import Postcard from "../../src/components/postcard.astro";
+const apiUrl = import.meta.env.VITE_API_URL;
 
-let data = [];
-try {
-  const response = await fetch("http://localhost:1337/api/categories?populate[posts][populate]=image");
-  const result = await response.json();
-  data = result.data; // assuming `result.data` contains an array of categories
-} catch (error) {
-  console.error("Error fetching categories:", error);
-}
-let posts =data.flatMap((item)=> item.posts)
-console.log(posts)
+const [categoryResponse, postResponse, authorResponse] = await Promise.all([
+  fetch(`${apiUrl}/api/categories`),
+  fetch(`${apiUrl}/api/posts?populate[image]=true`),
+  fetch(`${apiUrl}/api/users/1?populate[avatar]=true`)
+]);
+const categories = (await categoryResponse.json()).data;
+const posts = (await postResponse.json()).data;
+const author = await authorResponse.json();
+
 ---
 
 <Layout title="Archive">
   <Container>
-    
     <main>
+      <!-- Category Links Section -->
       <div class="grid gap-10 lg:gap-10 md:grid-cols-2 xl:grid-cols-3">
-        {data.map((cat) => (
-          <a href={`/${cat.catSlug}`} class="block text-center rounded-lg bg-gray-900" >
-              <h1 class="text-3xl p-5 font-semibold text-white ">{cat.name} →</h1>
+        {categories.map((cat) => (
+          <a href={`/${cat.catSlug}`} class="block text-center rounded-lg bg-gray-900">
+            <h1 class="text-3xl p-5 font-semibold text-white">{cat.name} →</h1>
           </a>
         ))}
       </div>
 
-      <section class= "text-center mt-12" > 
-        <h1 class="text-3xl font-semibold tracking-tight text-center lg:leading-snug text-brand-primary lg:text-4xl dark:text-white"> 
-          Archive
-        </h1>
-          <p class="text-lg mt-3 text-gray-600 dark:text-gray-400"> See all posts we have ever written.</p>
-      
-        </section>
+      <!-- Archive Section -->
+      <section class="text-center mt-12">
+        <h1 class="text-3xl font-semibold tracking-tight text-center lg:leading-snug text-brand-primary lg:text-4xl dark:text-white">Archive</h1>
+        <p class="text-lg mt-3 text-gray-600 dark:text-gray-400">See all posts we have ever written.</p>
+      </section>
 
-      <div class="grid gap-10 lg:gap-7  mt-6 md:grid-cols-2">
-        
-        <!-- Dynamically render Postcard components for each post -->
-        {
-      posts.map((post) => (
-              <Postcard post={post} aspect="landscape" preloadImage={true} />
-            ))
-        }
+      <!-- Posts Grid -->
+      <div class="grid gap-10 lg:gap-7 mt-6 md:grid-cols-3">
+        {posts.map((post) => (
+          <Postcard post={post} author={author} aspect="landscape" preloadImage={true} />
+        ))}
       </div>
     </main>
   </Container>

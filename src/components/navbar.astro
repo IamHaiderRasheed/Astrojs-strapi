@@ -52,33 +52,38 @@ import logo from "../../public/logo.svg";
         <div
           class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start"
         >
-          <div class="flex flex-shrink-0 items-center">
-            <img
-              class="h-8 w-auto"
-              src={logo.src}
-              alt="Your Company"
-            />
+          <div class="flex items-center">
+            <a href="/" id="logo-link">
+              <img class="h-8 w-auto" src={logo.src} alt="Your Company" />
+            </a>
           </div>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
               <a
                 href="/"
-                class="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-white"
-                aria-current="page">Home</a
-              >
-              <a
-                href="http://localhost:4321/archive"
                 class="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
+                id="home-link"
+                >Home</a
+              >
+
+              <a
+                href="/archive"
+                class="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
+                id="archive-link"
                 >Archive</a
               >
+
               <a
-                href="http://localhost:4321/about"
+                href="/about"
                 class="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
+                id="about-link"
                 >About</a
               >
+
               <a
-                href="http://localhost:4321/contact"
+                href="/contact"
                 class="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
+                id="contact-link"
                 >Contact</a
               >
             </div>
@@ -115,42 +120,52 @@ import logo from "../../public/logo.svg";
     <div class="hidden sm:hidden" id="mobile-menu">
       <div class="space-y-1 px-2 pb-3 pt-2">
         <a
-          href="#"
-          class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
-          aria-current="page">Home</a
-        >
+          href="/"
+          class="block rounded-md px-3 py-2 text-base font-medium text-black"
+          id="mobile-home-link"
+          >Home</a>
         <a
-          href="#"
+          href="/archive"
           class="block rounded-md px-3 py-2 text-base font-medium text-black hover:bg-gray-700 hover:text-white"
-          >Projects</a
-        >
+          id="mobile-archive-link"
+          >Archive</a>
         <a
-          href="#"
+          href="/about"
           class="block rounded-md px-3 py-2 text-base font-medium text-black hover:bg-gray-700 hover:text-white"
-          >About</a
-        >
+          id="mobile-about-link"
+          >About</a>
         <a
-          href="#"
+          href="/contact"
           class="block rounded-md px-3 py-2 text-base font-medium text-black hover:bg-gray-700 hover:text-white"
-          >Contact</a
-        >
+          id="mobile-contact-link"
+          >Contact</a>
       </div>
     </div>
   </nav>
 
-  <!-- JavaScript for toggling the mobile menu -->
-  <script client:media="(max-width: 640px)">
-    document.addEventListener("DOMContentLoaded", function () {
-      const menuButton = document.getElementById("menu-button");
-      const mobileMenu = document.getElementById("mobile-menu");
-      const iconClosed = document.getElementById("icon-closed");
-      const iconOpen = document.getElementById("icon-open");
+  <!-- JavaScript for toggling the mobile menu and highlighting active link -->
+  <script client:load>
+document.addEventListener("DOMContentLoaded", function () {
+  // Toggle mobile menu
+  const menuButton = document.getElementById("menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const iconClosed = document.getElementById("icon-closed");
+  const iconOpen = document.getElementById("icon-open");
 
-      menuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-        iconClosed.classList.toggle("hidden");
-        iconOpen.classList.toggle("hidden");
-      });
-    });
+  menuButton.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+    iconClosed.classList.toggle("hidden");
+    iconOpen.classList.toggle("hidden");
+  });
+
+  // Highlight active link
+  const links = document.querySelectorAll("a:not(#logo-link)"); // Exclude logo link
+  links.forEach((link) => {
+    if (link.getAttribute("href") === window.location.pathname) {
+      link.classList.add("bg-gray-700", "text-white");
+    }
+  });
+});
+
   </script>
 </Container>

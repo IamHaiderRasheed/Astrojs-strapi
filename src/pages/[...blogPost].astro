@@ -2,12 +2,17 @@
 import Layout from "../../src/layouts/layout.astro";
 import Container from "../../src/components/container.astro";
 import Label from "../../src/components/label.astro";
+import Authorcard from "../../src/components/authorcard.astro";
+import { Image } from 'astro:assets'
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getStaticPaths() {
+  const apiUrl = import.meta.env.VITE_API_URL;
   let posts = [];
   try {
     const response = await fetch(
-      "http://localhost:1337/api/posts?populate[image]=true&populate[categories]=true"
+      `${apiUrl}/api/posts?populate[image]=true&populate[categories]=true`
     );
     const result = await response.json();
     posts = result.data; 
@@ -17,9 +22,19 @@ export async function getStaticPaths() {
 
   return posts.map((post) => ({
     params: { blogPost: post.slug },
-    props: { post },
+    props: { post,  },
   }));
 }
+
+let author;
+try {
+    const response = await fetch(`${apiUrl}/api/users/1?populate[avatar]=true`);
+    const result = await response.json();
+   author= result
+  } catch (error) {
+    console.error("Error fetching user:", error);
+  }
+
 
 const { post } = Astro.props;
 const { title, description, categories, tags, image } = post;
@@ -52,8 +67,8 @@ const { title, description, categories, tags, image } = post;
   class="relative z-0 max-w-screen-lg mx-auto overflow-hidden lg:rounded-lg aspect-video">
   {
     image && (
-      <img
-        src={`http://localhost:1337${image.url}`} 
+      <Image
+      src={`${apiUrl}${image?.formats.medium.url}`} 
         alt={image.alternativeText || "Post Thumbnail"}
         width="1024"
         height="576"
@@ -129,7 +144,7 @@ const { title, description, categories, tags, image } = post;
           ← View all posts
         </a>
       </div>
-      <!-- {author && <Authorcard author={author} />} -->
+      {author && <Authorcard author={author} />}
     </article>
   </Container>
 </Layout>
