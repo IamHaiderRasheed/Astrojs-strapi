@@ -28,11 +28,11 @@ const formattedDate = date.toLocaleDateString("en-US", options);
         <Image
         src={`${apiUrl}${image?.formats.small.url}`} 
           widths={[200, 400, 800]}
-          width={image?.formats.small.width} 
+          width={image?.formats.large.width} 
           height={image?.formats.small.height}
           alt="Thumbnail"
           loading={preloadImage ? "eager" : "lazy"}
-          class="w-full h-full rounded-md"
+          class=" h-full rounded-md"
         />
       ) : (""
         // <span class="absolute w-16 h-16 text-gray-200 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
