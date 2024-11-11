@@ -5,8 +5,8 @@ export default {
 		extend: {},
 	},
 	safelist: [
-    'text-purple-600', // Example of a class that may be dynamic
-    'text-red', // Add more color classes as needed
+    'text-purple-600', 
+    'text-red',
     'text-emerald-700',
     'text-pink-600',
     // Add more dynamic classes used in your code

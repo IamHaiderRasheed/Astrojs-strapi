@@ -1,47 +1,26 @@
-# Astro Starter Kit: Minimal
+# [AstroJS-Strapi Project](https://astrohaider.netlify.app/)
 
-```sh
-npm create astro@latest -- --template minimal
-```
+This project is a static site using Astro for full static site generation (SSG) with content managed by Strapi, a headless CMS. It features Tailwind CSS for styling and is deployed on Netlify.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+## Features
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- **Full Static Site Generation** with Astro.
+- **Strapi** as the headless CMS for content.
+- **Tailwind CSS** with custom typography for styling.
+- **SSG Pagination** for category pages.
+- **Classnames Library** for dynamic CSS styling in JSX. The `classnames` library (`"^2.5.1"`) is used to conditionally combine CSS classes, making it easier to handle complex class combinations cleanly and efficiently.
 
-## 🚀 Project Structure
+## Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
+- **src/pages**: Main Astro components and pages, including pagination setup.
+- **public/**: Stores static assets like images.
+- **tailwind.config.js**: Configures Tailwind for custom styling.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## Getting Started
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+1. **Install Dependencies**  
+   Run `npm install` to install all required packages.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+2. **Start Development Server**  
+   ```bash
+   npm run dev
